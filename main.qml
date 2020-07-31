@@ -20,6 +20,7 @@ ApplicationWindow {
             id: playView
             model: playlistmodel
             Layout.fillHeight: true
+            currentIndex: -1
 
             delegate: Rectangle {
                 id: delegate
@@ -46,20 +47,31 @@ ApplicationWindow {
 
         RowLayout {
             id: progressrow
-            property alias text: progresstime.text
             width: root.width
             Layout.margins: 5
 
-            ProgressBar {
+            MySlider {
                 id: progressbar
-                Layout.fillWidth: true
                 from: 0
+                Layout.fillWidth: true
+                sliderColor: 'red'
+                sliderHeight: 5
+                sliderRadius: 5
+            }
+
+
+
+
+// put two text types instead of one becaise i get text bug when i call two functions to get time
+            Text {
+                text: getTextDuration(progressbar.value) + ' / '
             }
 
             Text {
-                id: progresstime
-                text: getTextDuration(progressbar.value) + ' / ' + getTextDuration(playMusic.duration)
+                text: getTextDuration(playMusic.duration)
             }
+
+
         }
 
         RowLayout {
@@ -74,11 +86,7 @@ ApplicationWindow {
                     text: 'Previous'
 
                     onClicked: {
-                        if (indexOfMusic == 0 || playMusic.source == "")
-                            indexOfMusic = playlistmodel.rowCount() - 1
-                        else
-                            indexOfMusic -= 1
-                        startPlaying()
+                        playPrevious()
                         statebtn.text = 'Pause'
                     }
                 }
@@ -102,11 +110,7 @@ ApplicationWindow {
                     text: 'Next'
 
                     onClicked: {
-                        if (indexOfMusic === playlistmodel.rowCount() - 1)
-                            indexOfMusic = 0
-                        else
-                            indexOfMusic += 1
-                        startPlaying()
+                        playNext()
                         statebtn.text = 'Pause'
                     }
                 }
@@ -139,14 +143,32 @@ ApplicationWindow {
         running: true
         repeat: true
         onTriggered: {
-            if (playMusic.playbackState == Audio.PlayingState) {
-                if (playMusic.duration !== progressbar.to)
-                    progressbar.to = playMusic.duration
-                progressbar.value = playMusic.position
-            }
+            if (playMusic.duration !== progressbar.to)
+                progressbar.to = playMusic.duration
 
+            if (progressbar.value === playMusic.duration && playMusic.source != "")
+                playNext()
 
+            progressbar.value = playMusic.position
+
+            console.log(progressbar.value)
         }
+    }
+
+    function playNext() {
+        if (indexOfMusic === playlistmodel.rowCount() - 1)
+            indexOfMusic = 0
+        else
+            indexOfMusic += 1
+        startPlaying()
+    }
+
+    function playPrevious() {
+        if (indexOfMusic == 0 || playMusic.source == "")
+            indexOfMusic = playlistmodel.rowCount() - 1
+        else
+            indexOfMusic -= 1
+        startPlaying()
     }
 
     function getMusicName(string) {
