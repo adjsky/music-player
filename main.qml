@@ -29,7 +29,7 @@ ApplicationWindow {
                 color: ListView.isCurrentItem ? "red" : "white"
 
                 Text {
-                    text: getMusicName(model.source)
+                    text: model.name.replace(/.\w+$/, "")
 
                     anchors.centerIn: parent
                 }
@@ -126,6 +126,16 @@ ApplicationWindow {
                     playMusic.volume = value / 100
                 }
             }
+
+            Button {
+                text: "Shuffle"
+
+                onClicked: {
+                    playlistmodel.shufflePlaylist()
+                    indexOfMusic = 0
+                    startPlaying()
+                }
+            }
         }
     }
 
@@ -150,8 +160,6 @@ ApplicationWindow {
                 playNext()
 
             progressbar.value = playMusic.position
-
-            console.log(progressbar.value)
         }
     }
 
@@ -169,10 +177,6 @@ ApplicationWindow {
         else
             indexOfMusic -= 1
         startPlaying()
-    }
-
-    function getMusicName(string) {
-        return String(string).replace(/^.*[\\\/]/, '').replace(/.\w+$/, '')
     }
 
     function getTextDuration(dur) {
