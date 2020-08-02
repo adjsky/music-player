@@ -28,15 +28,17 @@ find_package(Qt5 COMPONENTS Core Quick QuickControls2 REQUIRED)
 
 if(ANDROID)
     add_library(mp3player SHARED
-      main.cpp
-      qml.qrc
+        src/main.cpp
+        qml/qml.qrc
+        src/playlistmodel.cpp
+        src/playlistmodel.h
     )
 else()
     add_executable(mp3player
-      main.cpp
-      qml.qrc
-      playlistmodel.cpp
-      playlistmodel.h
+        src/main.cpp
+        qml/qml.qrc
+        src/playlistmodel.cpp
+        src/playlistmodel.h
     )
 endif()
 
