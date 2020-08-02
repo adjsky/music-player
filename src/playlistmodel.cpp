@@ -32,7 +32,7 @@ QUrl PlaylistModel::at(QJsonValue index) {
 void PlaylistModel::fetchMusic(QDir dir, int depthLevel, int maximumLevel) {
     if (depthLevel == maximumLevel)
         return;
-    for (QString str : dir.entryList({"*.mp3"})) {
+    for (QString str : dir.entryList({"*.mp3", "*.wav"})) {
         QString file { "file:" + dir.filePath(str) };
         QHash<QString, QString> data { { "name", str }, { "url", file } };
         m_data.append(data);

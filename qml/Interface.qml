@@ -30,7 +30,7 @@ Item {
 
                 Text {
                     text: model.name.replace(/.\w+$/, "")
-
+                    font.pixelSize: 11
                     anchors.centerIn: parent
                 }
 
@@ -62,7 +62,7 @@ Item {
 
 
 
-    // put two text types instead of one becaise i get text bug when i call two functions to get time
+    // put two text types instead of one because i get text bug when i call two functions to get time
             Text {
                 text: getTextDuration(progressbar.value) + ' / '
             }
@@ -153,9 +153,6 @@ Item {
         running: true
         repeat: true
         onTriggered: {
-            if (playMusic.duration !== progressbar.to)
-                progressbar.to = playMusic.duration
-
             if (progressbar.value === playMusic.duration && playMusic.source != "")
                 playNext()
 
@@ -197,6 +194,6 @@ Item {
         playMusic.source = playlistmodel.at(indexOfMusic )
         playMusic.play()
         playView.currentIndex = indexOfMusic
-        progressbar.to = playMusic.duration
+        progressbar.value = 0
     }
 }

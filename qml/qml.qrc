@@ -2,9 +2,9 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>MySlider.qml</file>
-        <file>+android/main.qml</file>
         <file>Interface.qml</file>
-        <file>+android/qtquickcontrols2.conf</file>
         <file>qtquickcontrols2.conf</file>
+        <file>+android/main.qml</file>
+        <file>+android/qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

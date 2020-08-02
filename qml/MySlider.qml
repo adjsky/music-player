@@ -4,7 +4,7 @@ import QtQuick.Controls 2.12
 Item {
     id: root
     property int from
-    property int to
+    property int to: playMusic.duration
     property int value
     property int sliderHeight;
     property int sliderRadius;
@@ -12,7 +12,6 @@ Item {
 
     Rectangle {
         id: progressbar_background
-        property bool clicked: false
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width
         height: sliderHeight
@@ -22,24 +21,24 @@ Item {
         MouseArea {
             anchors.fill: parent
             onPositionChanged: {
-                if (!progressbar.to)
+                if (!root.to)
                     return
-                if (progressbar_background.clicked) {
-                    if (mouseX >= 0 && mouseX <= parent.width) {
-                        progressbar.value = Math.trunc(progressbar.to / width * mouseX)
-                    }
+                if (mouseX >= 0 && mouseX <= parent.width) {
+                    root.value = Math.trunc(root.to / width * mouseX)
                 }
             }
 
             onClicked: {
-                if (!progressbar.to)
+                if (!root.to)
                     return
-                progressbar_background.clicked = true
+                root.value = Math.trunc(root.to / width * mouseX)
+                playMusic.seek(root.value)
             }
+
             onReleased: {
-                if (!progressbar.to)
+                if (!root.to)
                     return
-                playMusic.seek(Math.trunc(progressbar.to / width * mouseX))
+                playMusic.seek(root.value)
             }
         }
     }
