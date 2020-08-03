@@ -1,4 +1,4 @@
-QT += quick quickcontrols2 core
+QT += quick quickcontrols2
 
 android {
     QT += androidextras
