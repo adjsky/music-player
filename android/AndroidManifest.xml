@@ -3,12 +3,10 @@
     <!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.
          Remove the comment if you do not require these default permissions. -->
     <!-- %%INSERT_PERMISSIONS -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <!-- The following comment will be replaced upon deployment with default features based on the dependencies of the application.
          Remove the comment if you do not require these default features. -->
     <!-- %%INSERT_FEATURES -->
-
-
 
     <supports-screens android:largeScreens="true" android:normalScreens="true" android:anyDensity="true" android:smallScreens="true"/>
 
@@ -62,7 +60,7 @@
                           application still try to draw after
                           "applicationStateChanged(Qt::ApplicationSuspended)"
                           signal is sent! -->
-            <meta-data android:name="android.app.background_running" android:value="true"/>
+            <meta-data android:name="android.app.background_running" android:value="false"/>
             <!-- Background running -->
 
             <!-- auto screen scale factor -->
@@ -76,13 +74,12 @@
                 * minimal - useful for Quick Controls 2 apps, it is much faster than "full"
                 * none - useful for apps that don't use any of the above Qt modules
                 -->
-            <meta-data android:name="android.app.extract_android_style" android:value="minimal"/>
+            <meta-data android:name="android.app.extract_android_style" android:value="default"/>
             <!-- extract android style -->
     </activity>
 
     <!-- For adding service(s) please check: https://wiki.qt.io/AndroidServices -->
 
     </application>
-
 
 </manifest>
