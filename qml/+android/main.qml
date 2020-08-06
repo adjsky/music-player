@@ -1,8 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtMultimedia 5.15
-import PlaylistModel 1.0
 
 
 ApplicationWindow {

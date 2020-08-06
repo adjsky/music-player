@@ -1,11 +1,23 @@
 #include <QRegExp>
-#include "playlistmodel.h"
 #include <random>
+
+#include "playlistmodel.h"
+
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#endif
 
 PlaylistModel::PlaylistModel(QObject *parent) : QAbstractListModel(parent)
 {
     m_roleNames[SourceRole] = "source";
     m_roleNames[NameRole] = "name";
+
+#ifdef Q_OS_ANDROID
+    while (QtAndroid::checkPermission(QString("android.permission.READ_EXTERNAL_STORAGE")) != QtAndroid::PermissionResult::Granted) {
+
+    }
+#endif
+
     fetchMusic(QDir(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)), 0, 1);
     fetchMusic(QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)), 0, 1);
     sortPlaylist();
@@ -25,8 +37,12 @@ void PlaylistModel::sortPlaylist() {
     });
 }
 
-QUrl PlaylistModel::at(QJsonValue index) {
+QUrl PlaylistModel::urlAt(QJsonValue index) {
     return m_data.at(index.toInt())["url"];
+}
+
+QString PlaylistModel::nameAt(QJsonValue index) {
+    return m_data.at(index.toInt())["name"];
 }
 
 void PlaylistModel::fetchMusic(QDir dir, int depthLevel, int maximumLevel) {

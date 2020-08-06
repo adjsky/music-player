@@ -5,6 +5,8 @@ import QtMultimedia 5.15
 import PlaylistModel 1.0
 
 Item {
+    id: interfaceWindow
+
     anchors.fill: parent
 
     ColumnLayout {
@@ -37,7 +39,6 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked:  {
-                        statebtn.text = "Pause"
                         root.indexOfMusic = index
                         startPlaying()
                     }
@@ -70,8 +71,6 @@ Item {
             Text {
                 text: getTextDuration(playMusic.duration)
             }
-
-
         }
 
         RowLayout {
@@ -143,6 +142,7 @@ Item {
         id: playlistmodel
     }
 
+
     Audio {
         id: playMusic
         source: ""
@@ -160,6 +160,27 @@ Item {
         }
     }
 
+    Connections {
+        target: mediaControlNotification
+
+        function onNextButtonClicked() {
+            playNext()
+        }
+
+        function onPreviousButtonClicked() {
+            playPrevious()
+        }
+
+        function onPlayButtonClicked() {
+            if (playMusic.playbackState == Audio.PlayingState) {
+                playMusic.pause()
+                statebtn.text = 'Play'
+            } else {
+                startPlaying()
+            }
+        }
+    }
+
     function playNext() {
         if (indexOfMusic === playlistmodel.rowCount() - 1)
             indexOfMusic = 0
@@ -167,7 +188,6 @@ Item {
             indexOfMusic += 1
         startPlaying()
     }
-
     function playPrevious() {
         if (indexOfMusic == 0 || playMusic.source == "")
             indexOfMusic = playlistmodel.rowCount() - 1
@@ -191,9 +211,12 @@ Item {
 
 
     function startPlaying() {
-        playMusic.source = playlistmodel.at(indexOfMusic )
+        statebtn.text = 'Pause'
+        playMusic.source = playlistmodel.urlAt(indexOfMusic)
         playMusic.play()
         playView.currentIndex = indexOfMusic
         progressbar.value = 0
+
+        mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""))
     }
 }

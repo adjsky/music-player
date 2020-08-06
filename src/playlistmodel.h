@@ -21,7 +21,8 @@ public:
     void fetchMusic(QDir dir, int depthLevel, int maximumlevel);
     void sortPlaylist();
     Q_INVOKABLE void shufflePlaylist();
-    Q_INVOKABLE QUrl at(QJsonValue index);
+    Q_INVOKABLE QUrl urlAt(QJsonValue index);
+    Q_INVOKABLE QString nameAt(QJsonValue index);
 
 protected:
     virtual QHash<int, QByteArray> roleNames() const override;
