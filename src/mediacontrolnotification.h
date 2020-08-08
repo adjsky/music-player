@@ -9,16 +9,16 @@ class MediaControlNotification : public QObject
 public:
     explicit MediaControlNotification(QObject *parent = nullptr);
     static MediaControlNotification *instance() { return m_instance; }
-    Q_INVOKABLE void notificate(QString string);
+    Q_INVOKABLE void notificate(QString string, bool paused);
 
 signals:
-    void onNotificationUpdate(QString string);
+    void onNotificationUpdate(QString string, bool paused);
     void playButtonClicked();
     void nextButtonClicked();
     void previousButtonClicked();
 
 private slots:
-    void showNotification(QString string);
+    void showNotification(QString string, bool paused);
 
 private:
     static MediaControlNotification *m_instance;

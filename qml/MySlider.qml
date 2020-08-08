@@ -4,7 +4,7 @@ import QtQuick.Controls 2.12
 Item {
     id: root
     property int from
-    property int to: playMusic.duration
+    property int to: getMusicDuration()
     property int value
     property int sliderHeight;
     property int sliderRadius;
@@ -50,5 +50,11 @@ Item {
         height: sliderHeight
         radius: sliderRadius
         color: sliderColor
+    }
+
+    function getMusicDuration() {
+        if (playMusic.duration === 0)
+            return 1
+        return playMusic.duration
     }
 }

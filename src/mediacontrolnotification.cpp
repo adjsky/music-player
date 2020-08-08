@@ -42,13 +42,18 @@ MediaControlNotification::MediaControlNotification(QObject *parent) : QObject(pa
     env->DeleteLocalRef(objectClass);
 }
 
-void MediaControlNotification::showNotification(QString string) {
+void MediaControlNotification::showNotification(QString string, bool paused) {
     QAndroidJniObject name = QAndroidJniObject::fromString(string);
-    QAndroidJniObject::callStaticMethod<void>("com/java/notification/MediaControlNotification", "notify", "(Landroid/content/Context;Ljava/lang/String;)V",
-                                                  QtAndroid::androidContext().object(), name.object<jstring>());
+    jboolean state = paused;
+    QAndroidJniObject::callStaticMethod<void>("com/java/notification/MediaControlNotification",
+                                              "notify",
+                                              "(Landroid/content/Context;Ljava/lang/String;Z)V",
+                                              QtAndroid::androidContext().object(),
+                                              name.object<jstring>(),
+                                              state);
 }
 
-void MediaControlNotification::notificate(QString string) {
-    emit onNotificationUpdate(string);
+void MediaControlNotification::notificate(QString string, bool paused) {
+    emit onNotificationUpdate(string, paused);
 }
 

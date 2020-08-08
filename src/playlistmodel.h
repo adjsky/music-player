@@ -10,6 +10,8 @@ public:
     explicit PlaylistModel(QObject *parent = nullptr);
     ~PlaylistModel();
 
+    static PlaylistModel *instance() { return m_instance; }
+
     enum RoleNames {
         SourceRole = Qt::UserRole,
         NameRole = Qt::UserRole + 1
@@ -18,7 +20,7 @@ public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
-    void fetchMusic(QDir dir, int depthLevel, int maximumlevel);
+    void fetchMusic();
     void sortPlaylist();
     Q_INVOKABLE void shufflePlaylist();
     Q_INVOKABLE QUrl urlAt(QJsonValue index);
@@ -30,7 +32,7 @@ protected:
 private:
     QHash<int, QByteArray> m_roleNames;
     QList<QHash<QString, QString>> m_data;
-
+    static PlaylistModel *m_instance;
 };
 
 #endif // PLAYLISTMODEL_H

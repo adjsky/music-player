@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <manifest package="com.adjsky.mp3player" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
-    <uses-sdk android:targetSdkVersion="24"/>
+    <uses-sdk android:targetSdkVersion="28"/>
     <!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.
          Remove the comment if you do not require these default permissions. -->
     <!-- %%INSERT_PERMISSIONS -->
@@ -10,8 +10,9 @@
     <!-- %%INSERT_FEATURES -->
 
     <supports-screens android:largeScreens="true" android:normalScreens="true" android:anyDensity="true" android:smallScreens="true"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="Mp3 Player" android:extractNativeLibs="true" android:icon="@drawable/icon">
+
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:label="-- %%INSERT_APP_NAME%% --" android:screenOrientation="unspecified" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -82,11 +83,6 @@
     <!-- For adding service(s) please check: https://wiki.qt.io/AndroidServices -->
 
     <receiver android:name="com.java.notification.NotificationReceiver">
-        <intent-filter>
-            <action android:name="com.adjsky.mp3player.PREVIOUS_PLAY" />
-            <action android:name="com.adjsky.mp3player.NEXT_PLAY" />
-            <action android:name="com.adjsky.mp3player.PLAY_PAUSE" />
-        </intent-filter>
     </receiver>
 
     </application>

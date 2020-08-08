@@ -5,8 +5,6 @@ import QtMultimedia 5.15
 import PlaylistModel 1.0
 
 Item {
-    id: interfaceWindow
-
     anchors.fill: parent
 
     ColumnLayout {
@@ -94,13 +92,7 @@ Item {
                     id: statebtn
                     text: 'Play'
                     onClicked: {
-                        if (playMusic.playbackState == Audio.PlayingState) {
-                            playMusic.pause()
-                            statebtn.text = 'Play'
-                        } else {
-                            startPlaying()
-                            statebtn.text = 'Pause'
-                        }
+                        playButtonClick();
                     }
                 }
 
@@ -158,28 +150,7 @@ Item {
 
             progressbar.value = playMusic.position
         }
-    }
-
-    Connections {
-        target: mediaControlNotification
-
-        function onNextButtonClicked() {
-            playNext()
-        }
-
-        function onPreviousButtonClicked() {
-            playPrevious()
-        }
-
-        function onPlayButtonClicked() {
-            if (playMusic.playbackState == Audio.PlayingState) {
-                playMusic.pause()
-                statebtn.text = 'Play'
-            } else {
-                startPlaying()
-            }
-        }
-    }
+    }   
 
     function playNext() {
         if (indexOfMusic === playlistmodel.rowCount() - 1)
@@ -209,6 +180,19 @@ Item {
         return minutes + ':' + seconds
     }
 
+    function playButtonClick() {
+        if (playMusic.playbackState == Audio.PlayingState) {
+            playMusic.pause()
+            statebtn.text = 'Play'
+            if (Qt.platform.os == "android")
+                mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""), true)
+        } else {
+            statebtn.text = 'Pause'
+            playMusic.play()
+            if (Qt.platform.os == "android")
+                mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""), false)
+        }
+    }
 
     function startPlaying() {
         statebtn.text = 'Pause'
@@ -216,7 +200,7 @@ Item {
         playMusic.play()
         playView.currentIndex = indexOfMusic
         progressbar.value = 0
-
-        mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""))
+        if (Qt.platform.os == "android")
+            mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""), false)
     }
 }

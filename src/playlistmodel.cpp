@@ -5,22 +5,48 @@
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>
+
+void permissionCallback(const QtAndroid::PermissionResultMap &res) {
+    if (res["android.permission.READ_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied)
+        QGuiApplication::exit();
+//    else
+//        PlaylistModel::instance()->fetchMusic();
+}
+
 #endif
+
+PlaylistModel *PlaylistModel::m_instance = nullptr;
 
 PlaylistModel::PlaylistModel(QObject *parent) : QAbstractListModel(parent)
 {
+    m_instance = this;
+
     m_roleNames[SourceRole] = "source";
     m_roleNames[NameRole] = "name";
 
 #ifdef Q_OS_ANDROID
-    while (QtAndroid::checkPermission(QString("android.permission.READ_EXTERNAL_STORAGE")) != QtAndroid::PermissionResult::Granted) {
+   QtAndroid::requestPermissions({QString("android.permission.READ_EXTERNAL_STORAGE")}, permissionCallback);
 
-    }
+   while (QtAndroid::checkPermission("android.permission.READ_EXTERNAL_STORAGE") != QtAndroid::PermissionResult::Granted) {
+       QThread::sleep(1);
+   }
 #endif
+    fetchMusic();
 
-    fetchMusic(QDir(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)), 0, 1);
-    fetchMusic(QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)), 0, 1);
+
     sortPlaylist();
+}
+
+void PlaylistModel::fetchMusic() {
+    QList<QDir> dirs = {QDir(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)), QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation))};
+
+    for (QDir dir : dirs) {
+        for (QString str : dir.entryList({"*.mp3", "*.wav"})) {
+            QString file { "file:" + dir.filePath(str) };
+            QHash<QString, QString> data { { "name", str }, { "url", file } };
+            m_data.append(data);
+        }
+    }
 }
 
 void PlaylistModel::shufflePlaylist() {
@@ -44,24 +70,6 @@ QUrl PlaylistModel::urlAt(QJsonValue index) {
 QString PlaylistModel::nameAt(QJsonValue index) {
     return m_data.at(index.toInt())["name"];
 }
-
-void PlaylistModel::fetchMusic(QDir dir, int depthLevel, int maximumLevel) {
-    if (depthLevel == maximumLevel)
-        return;
-    for (QString str : dir.entryList({"*.mp3", "*.wav"})) {
-        QString file { "file:" + dir.filePath(str) };
-        QHash<QString, QString> data { { "name", str }, { "url", file } };
-        m_data.append(data);
-
-    }
-
-    for (const QString str : dir.entryList(QDir::Dirs)) {
-        if (str == "." or str == "..")
-            continue;
-        fetchMusic(dir.filePath(str), depthLevel + 1, maximumLevel);
-    }    
-}
-
 
 PlaylistModel::~PlaylistModel() {
 

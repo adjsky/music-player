@@ -4,12 +4,6 @@
 #include <QtAndroid>
 #include <QQuickWindow>
 #include "mediacontrolnotification.h"
-
-void permissionCallback(const QtAndroid::PermissionResultMap &res) {
-    if (res["android.permission.READ_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied)
-        QGuiApplication::exit();
-}
-
 #endif
 
 #include "playlistmodel.h"
@@ -21,9 +15,6 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-#ifdef Q_OS_ANDROID
-    QtAndroid::requestPermissions({QString("android.permission.READ_EXTERNAL_STORAGE")}, permissionCallback);
-#endif
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
@@ -40,5 +31,7 @@ int main(int argc, char *argv[])
 
     engine.load(url);
 
+
     return app.exec();
 }
+
