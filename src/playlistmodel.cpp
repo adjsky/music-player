@@ -9,8 +9,8 @@
 void permissionCallback(const QtAndroid::PermissionResultMap &res) {
     if (res["android.permission.READ_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied)
         QGuiApplication::exit();
-//    else
-//        PlaylistModel::instance()->fetchMusic();
+    else
+       PlaylistModel::instance()->fetchMusic();
 }
 
 #endif
@@ -26,27 +26,23 @@ PlaylistModel::PlaylistModel(QObject *parent) : QAbstractListModel(parent)
 
 #ifdef Q_OS_ANDROID
    QtAndroid::requestPermissions({QString("android.permission.READ_EXTERNAL_STORAGE")}, permissionCallback);
-
-   while (QtAndroid::checkPermission("android.permission.READ_EXTERNAL_STORAGE") != QtAndroid::PermissionResult::Granted) {
-       QThread::sleep(1);
-   }
 #endif
-    fetchMusic();
-
 
     sortPlaylist();
 }
 
 void PlaylistModel::fetchMusic() {
     QList<QDir> dirs = {QDir(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)), QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation))};
-
     for (QDir dir : dirs) {
         for (QString str : dir.entryList({"*.mp3", "*.wav"})) {
             QString file { "file:" + dir.filePath(str) };
             QHash<QString, QString> data { { "name", str }, { "url", file } };
+            beginInsertRows(QModelIndex(), m_data.count(),  m_data.count() + 1);
             m_data.append(data);
+            endInsertRows();
         }
     }
+
 }
 
 void PlaylistModel::shufflePlaylist() {

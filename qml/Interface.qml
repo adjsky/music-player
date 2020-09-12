@@ -188,7 +188,12 @@ Item {
                 mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""), true)
         } else {
             statebtn.text = 'Pause'
-            playMusic.play()
+            if (playMusic.source == "") {
+                startPlaying()
+            } else {
+                playMusic.play()
+            }
+
             if (Qt.platform.os == "android")
                 mediaControlNotification.notificate(playlistmodel.nameAt(indexOfMusic).replace(/.\w+$/, ""), false)
         }
